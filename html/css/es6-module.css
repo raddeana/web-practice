@@ -1,0 +1,13 @@
+.content {
+    padding: 20px;
+}
+
+button {
+    padding: 5px 10px;
+    border-radius: 0;
+    outline: none;
+    cursor: pointer;
+    border: 1px solid #333;
+    background: cornflowerblue;
+    color: #fff;
+}

@@ -1,0 +1,21 @@
+.content {
+    padding: 20px;
+}
+
+h4 {
+    font-size: 16px;
+
+}
+
+ul {
+    padding: 20px;
+    list-style: none;
+}
+
+li {
+    margin: 10px 0 0 0;
+}
+
+li:first-child {
+    margin: 0px;
+}
