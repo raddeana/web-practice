@@ -3,14 +3,24 @@
   "version": "0.0.1",
   "description": "for practice",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "asbuild:untouched:debug": "asc assembly/index.ts --target debug --use Math=JSMath --runtime stub --importMemory",
+    "asbuild:optimized:debug": "asc assembly/index.ts --target debug --use Math=JSMath --runtime stub -O3 --importMemory",
+    "asbuild:untouched": "asc assembly/index.ts --use Math=JSMath --runtime stub --importMemory",
+    "asbuild:optimized": "asc assembly/index.ts --use Math=JSMath --runtime stub -O3 --importMemory",
+    "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
+    "test": "node tests"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/raddeana/web-practice.git"
   },
   "dependencies": {
+    "@assemblyscript/loader": "^0.18.11",
     "koa": "^2.13.1",
     "koa-static": "^5.0.0"
+  },
+  "devDependencies": {
+    "assemblyscript": "^0.18.11"
   }
 }
