@@ -1,8 +1,6 @@
-import Mock from '../libs/mock-min.js';
-
 const Random = Mock.Random;
 
-Mock.mock('/list', (req, res) => {
+Mock.mock('/api/list', (req, res) => {
     let list = [];
 
     for(let i = 0; i < 500; i ++) {

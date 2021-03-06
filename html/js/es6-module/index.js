@@ -16,7 +16,7 @@ window.handleClearList = function () {
  * @return void
  */
 window.handleLoadList = function handleLoadList () {
-    get('/list').then(function (list) {
+    get('/api/list').then(function (list) {
         buildList(list);
     });
 }

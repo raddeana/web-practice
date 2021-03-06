@@ -22,11 +22,12 @@ function toQueryString (url, params) {
  * get 请求
  * @param {string}
  * @param {object}
- * @param {promise}
+ * @return {promise}
  */
 export function get (url, params) {
     return fetch(url, {
         method: 'GET',
+        params
     })
     .then(function (response) {
         if (response.ok) {
@@ -43,7 +44,7 @@ export function get (url, params) {
  * post 请求
  * @param {string}
  * @param {object}
- * @param {promise}
+ * @return {promise}
  */
 export function post (url, data) {
   return fetch(url, {
