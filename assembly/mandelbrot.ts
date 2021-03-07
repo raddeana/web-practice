@@ -24,8 +24,9 @@ export function computeLine(y: u32, width: u32, height: u32, limit: u32): void {
     while ((ixSq = ix * ix) + (iySq = iy * iy) <= 4.0) {
       iy = 2.0 * ix * iy + imaginary;
       ix = ixSq - iySq + real;
-      if (iteration >= limit) break;
-      ++iteration;
+      if (iteration >= limit)
+        break;
+      iteration ++;
     }
 
     // Do a few extra iterations for quick escapes to reduce error margin
