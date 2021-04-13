@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <script type='application/javascript' src='/static/libs/fastclick.min.js'></script>
+    <script type="text/javascript">
+        let defaultW = 375;
+        let phoneScale = parseInt(window.screen.width) / defaultW;
+        let userAgent = navigator.userAgent.toLowerCase();
+        let androidRegExp = /(android);?[\s\/]+([\d.]+)?/;
+        let iosRegExp = /iphone/;
+    </script>
+    <script type="text/javascript">
+        // ios 端 点击 300ms延迟修复
+        if (iosRegExp.test(userAgent)) {
+            document.addEventListener('DOMContentLoaded', function () {
+                FastClick.attach(document.body);
+            });
+        }
+    </script>
+    <script type="text/javascript">
+        if (androidRegExp.test(userAgent)) {
+            document.write('<meta name="viewport" content="width=' + defaultW + ', user-scalable=no, maximum-scale=' + phoneScale + ', minimum-scala=' + phoneScale + ', target-densitydpi=device-dpi">');
+        } else {
+            document.write('<meta name="viewport" content="width=' + defaultW + ', user-scalable=no, viewport-fit=cover">');
+        }
+    </script>
+    <script type="text/javascript">
+        // 禁止ios双击和双指缩放，拖拽弹性
+        if (iosRegExp.test(userAgent)) {
+            document.addEventListener('DOMContentLoaded', function () {
+                let lastTouchEnd = 0;
+
+                document.body.addEventListener('touchend', function (e) {
+                    let now = (new Date()).getTime();
+
+                    if (now - lastTouchEnd <= 300) {
+                        e.preventDefault();
+                    }
+
+                    lastTouchEnd = now;
+                }, { passive: false });
+
+                document.body.addEventListener('gesturestart', function (e) {
+                    e.preventDefault();
+                }, { passive: false });
+            });
+        }
+    </script>
+    <title>vue3.0练习</title>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
