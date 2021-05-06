@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>css 属性选择器</title>
+        <!--
+            1,属性的取值是以什么开头的
+            [attribute^=value] 
+            2,属性的取值是以什么结尾的
+            [attribute$=value]
+            3,属性的取值是否包含某个特定的值的
+            [attribute*=value] css3
+        -->
+        <style>
+            *[class*=abc] {
+                color: yellow;
+            }
+
+            *[class^=abc] {
+                color: red;
+            }
+
+            *[class$=abc] {
+                color: blue;
+            }
+        </style>
+    </head>
+    <body>
+        <p class="wwwabcwww">wwwabcwww</p>
+        <p class="www abc www">www abc www</p>
+        <p class="abcwww">abcwww</p>
+        <p class="abc www">abc www</p>
+        <p class="www www abc">www www abc</p>
+        <p class="wwwabc">wwwabc</p>
+    </body>
+</html>
