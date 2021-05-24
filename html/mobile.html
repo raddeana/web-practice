@@ -17,6 +17,14 @@
         if (iosRegExp.test(userAgent)) {
             document.addEventListener('DOMContentLoaded', function () {
                 FastClick.attach(document.body);
+              
+                $.fn.triggerFastClick = function () {
+                  this.trigger('click');
+                  
+                  if (!FastClick.notNeeded(document.body)) {
+                    this.trigger('click');
+                  }
+                }
             });
         }
     </script>
