@@ -1,0 +1,41 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <title>defer&&async</title>
+        <script>
+            document.addEventListener('DOMContentLoaded', function(event) {
+                console.log("DOM fully loaded and parsed");
+            });
+
+            window.addEventListener('load', function(event) {
+                console.log("resources loaded");
+            });
+
+            function onImgLoaded () {
+                console.log("img loaded");
+            }
+        </script>
+        <script src="./js/defer&async/defer.js" defer></script>
+        <script src="./js/defer&async/async.js" async></script>
+        <script src="./js/defer&async/normal.js"></script>
+        <script defer>console.log('inline defer');</script>
+        <script async>console.log('inline async');</script>
+        <script>console.log('inline normal');</script>
+    </head>
+    <body>
+        <h4>网络正常的执行顺序</h4>
+        <ul>
+            <li>async</li>
+            <li>normal</li>
+            <li>inline defer</li>
+            <li>inline async</li>
+            <li>inline normal</li>
+            <li>defer</li>
+            <li>DOM fully loaded and parsed</li>
+            <li>img loaded</li>
+            <li>resources loaded</li>
+        </ul>
+        <img onload="onImgLoaded()" src="https://user-images.githubusercontent.com/5197188/120893280-0bec2300-c645-11eb-9312-bdc57cad826c.png" />
+        <script>console.log('end of body');</script>
+    </body>
+</html>
