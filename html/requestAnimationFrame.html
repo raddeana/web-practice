@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>requestAnimationFrame</title>
+        <link rel="stylesheet" type="text/css" href="/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/css/common.css" media="screen">
+        <style>
+            .cycle {
+                position: fixed;
+                width: 30px;
+                height: 30px;
+                border-radius: 100%;
+                background: green;
+            }
+        </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+            let doms = [];
+            let bodyDom = document.querySelector('body');
+
+            for (let i = 0; i < 3333; i++) {
+                let cycle = document.createElement('div');
+                cycle.className = 'cycle';
+                bodyDom.append(cycle);
+                doms.push(cycle);
+            }
+
+            let startTime = new Date().getTime();
+            let count = 0;
+
+            setTimeout(function () {
+                console.log((new Date().getTime() - startTime) / count);
+            }, 5000);
+
+            function moveCycles () {
+                doms.forEach((cycle) => {
+                    cycle.style.top = `${Math.random() * 1000}px`;
+                    cycle.style.left = `${Math.random() * 1000}px`;
+                });
+
+                count ++;
+                requestAnimationFrame(moveCycles);
+            }
+
+            requestAnimationFrame(moveCycles);
+        </script>
+    </body>
+</html>
