@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>chrome浏览器，delete操作和内存的关系</title>
+        <link rel="stylesheet" type="text/css" href="/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/css/common.css" media="screen">
+    </head>
+    <body>
+        <script type="text/javascript">
+            class TD {
+                a = 1;
+                b;
+            }
+
+            let tds = [];
+
+            for (let i = 0; i < 300000; i ++) {
+                const td = new TD;
+                // 内存正常释放
+                // 占用内存45M
+                // delete td.a;
+
+                // 内存正常释放
+                // 占用内存9M
+                // td.a = undefined;
+                // td.a = null;
+
+                // 占内存9M
+                tds.push(td);
+            }
+
+            // tds = null;
+        </script>
+    </body>
+</html>
