@@ -38,6 +38,11 @@
             }
         </script>
         <script type="text/javascript">
+            window.addEventListener('error', (e) => {
+            console.log('addEventListener：', e);
+            }, true);
+        </script>
+        <script type="text/javascript">
             console.log('变量未定义：');
             function errTest () {
                 console.log(errT);
@@ -56,10 +61,20 @@
             }
             test();
         </script>
+        <script>
+            window.addEventListener("unhandledrejection", function(e){
+                e.preventDefault()
+                console.log('unhandledrejection：');
+                console.log(e);
+                return true;
+            });
+        </script>
         <script type="text/javascript">
             console.log('promise 中的代码错误：');
             new Promise(function (resolve) {
                 resolve(i);
+            }).catch(function () {
+                console.log('promise catch');
             });
         </script>
         <script type="text/javascript">
@@ -68,6 +83,8 @@
                 resolve(1);
             }).then(() => {
                 console.log(res);
+            }).then(() => {}, () => {
+                console.log('promise reject');
             });
         </script>
     </body>
