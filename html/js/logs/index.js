@@ -1,8 +1,7 @@
 /**
- * 日志收集器
+ * 日志入口文件
  * @author Philip
  */
-
 class Reporter {
     
 }
