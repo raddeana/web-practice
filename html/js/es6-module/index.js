@@ -1,6 +1,6 @@
 import { get } from '../fetch.js';
 import '../mock.js';
-import { filterIdLessThan100, buildList } from './utils.js';
+import { buildList } from './utils.js';
 
 
 /**

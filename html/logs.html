@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/index.css" media="screen">
+    </head>
+    <body>
+        <form>
+            <div class="form-row">
+                <label>用户名：</label>
+                <input type="text" />
+            </div>
+            <div class="form-row">
+                <label>密码：</label>
+                <input type="text" />
+            </div>
+            <div class="buttons-container">
+                <button type="submit">提交</button>
+            </div>
+        </form>
+        <script type="text/javascript" src="/js/logs.js"></script>
+        <script type="text/javascript">
+            /**
+             * 捕获全局错误
+             * @param {string}  errorMessage   错误信息
+             * @param {string}  scriptURI      出错的文件
+             * @param {number}  lineNumber     出错代码的行号
+             * @param {number}  columnNumber   出错代码的列号
+             * @param {object}  errorObj       错误的详细信息，Anything
+             * @return {boolean} 是否在控制台显示错误
+             */
+            window.onerror = function (errorMessage, scriptURI, lineNumber, columnNumber, errorObj) {
+                console.log(errorMessage);
+                console.log(scriptURI);
+                console.log(lineNumber);
+                console.log(columnNumber);
+                console.log(errorObj);
+                return true;
+            }
+        </script>
+        <script type="text/javascript">
+            console.log('变量未定义：');
+            function errTest () {
+                console.log(errT);
+            }
+
+            errTest();
+        </script>
+        <script type="text/javascript">
+            console.log('函数未定义：');
+            test(errTest());
+        </script>
+        <script type="text/javascript">
+            console.log('函数嵌套：');
+            function test () {
+                errTest();
+            }
+            test();
+        </script>
+        <script type="text/javascript">
+            console.log('promise 中的代码错误：');
+            new Promise(function (resolve) {
+                resolve(i);
+            });
+        </script>
+        <script type="text/javascript">
+            console.log('promise then 中的代码错误：');
+            new Promise(function (resolve) {
+                resolve(1);
+            }).then(() => {
+                console.log(res);
+            });
+        </script>
+    </body>
+</html>

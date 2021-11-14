@@ -6,6 +6,10 @@
         <link rel="stylesheet" type="text/css" href="/css/common.css" media="screen">
     </head>
     <body>
+        <p>测试结果是：大多数实验中内存正常释放，少部分情况内存未释放</p>
+        <button id="cleaner">
+            清除数据
+        </button>
         <script type="text/javascript">
             class TD {
                 a = 1;
@@ -14,7 +18,7 @@
 
             let tds = [];
 
-            for (let i = 0; i < 300000; i ++) {
+            for (let i = 0; i < 10000000; i ++) {
                 const td = new TD;
                 // 内存正常释放
                 // 占用内存45M
@@ -29,7 +33,10 @@
                 tds.push(td);
             }
 
-            // tds = null;
+            document.getElementById('cleaner').onclick = function () {
+                alert(tds.length);
+                tds = null;
+            };
         </script>
     </body>
 </html>
