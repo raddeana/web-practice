@@ -1,46 +1,34 @@
-let Vue = require("vue/dist/vue.esm.js");
-Vue = Vue.default || Vue;
-const createRouter = require("./router")
+/**
+ * 
+ * @author Philip
+ */
+const Vue = require('vue');
+const App = require('./App.vue');
+const createStore = require('./store');
+const createRouter = require('./router');
 const { sync } = require('vuex-router-sync');
 
-module.exports = (context) => {
+module.exports = () => {
     const router = createRouter();
-    const createStore = require('./store');
     const store = createStore();
 
     sync(store, router)
 
     const app =  new Vue({
         router,
-        data:{
-            message:"Hello,Vue SSR!",
-            text1: '',
-            text2: ''
-        },
-        template:`
-            <div>
-                <h1>{{ message }}</h1>
-                <p>{{text1}}</p>
-                <p>{{text2}}</p>
-                <ul>
-                    <li>
-                        <router-link to="/">home</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/about">about</router-link>
-                    </li>
-                </ul>
-                <router-view></router-view>
-            </div>
-        `,
-        asyncData ({ store, route }) {
-            return new Promise((resolve, reject) => {
-                resolve()
+        render: h => h(App),
+        asyncData () {
+            return new Promise((resolve) => {
+                setTimeout(function () {
+                    resolve();
+                }, 300);
             });
         },
     });
+
     return {
         app,
+        store,
         router
-    }
+    };
 }

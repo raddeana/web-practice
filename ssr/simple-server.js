@@ -17,13 +17,13 @@ app.get("*", async(request, response) => {
     response.setHeader("Content-type", "text/html;charset-utf-8");
 
     const {url} = request;
-    const vm = await App({ url })
+    const app = await App({ url })
 
-    vueServerRender.renderToString(vm).then((html) => {
+    vueServerRender.renderToString(app).then((html) => {
         response.end(html);
     }).catch(err => console.log(err))
-})
+});
 
 app.listen(3031, () => {
     console.log("服务已开启")
-})
+});
