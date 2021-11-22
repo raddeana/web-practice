@@ -8,6 +8,9 @@
 </div>
 </template>
 <style scoped>
+.login-panel {
+    background: green;
+}
 </style>
 <script>
 export default {
