@@ -10,12 +10,13 @@
     }, className]"
     @mousedown="elementMouseDown"
     @touchstart="elementTouchDown"
+    @contextmenu="onContextMenu"
   >
     <div
       v-for="handle in actualHandles"
       :key="handle"
       :class="[classNameHandle, classNameHandle + '-' + handle]"
-      :style="{display: enabled ? 'block' : 'none'}"
+      :style="handleStyle(handle)"
       @mousedown.stop.prevent="handleDown(handle, $event)"
       @touchstart.stop.prevent="handleTouchDown(handle, $event)"
     >
@@ -26,8 +27,8 @@
 </template>
 
 <script>
-import { matchesSelectorToParentElements, getComputedSize, addEvent, removeEvent } from './utils/dom'
-import { computeWidth, computeHeight, restrictToBounds, snapToGrid } from './utils/fns'
+import { matchesSelectorToParentElements, getComputedSize, addEvent, removeEvent } from '../utils/dom'
+import { computeWidth, computeHeight, restrictToBounds, snapToGrid } from '../utils/fns'
 
 const events = {
   mouse: {
@@ -42,13 +43,14 @@ const events = {
   }
 }
 
+// 禁止用户选取
 const userSelectNone = {
   userSelect: 'none',
   MozUserSelect: 'none',
   WebkitUserSelect: 'none',
   MsUserSelect: 'none'
 }
-
+// 用户选中自动
 const userSelectAuto = {
   userSelect: 'auto',
   MozUserSelect: 'auto',
@@ -114,6 +116,7 @@ export default {
       type: Boolean,
       default: true
     },
+    // 锁定宽高比
     lockAspectRatio: {
       type: Boolean,
       default: false
@@ -125,7 +128,6 @@ export default {
         if (typeof val === 'number') {
           return val > 0
         }
-
         return val === 'auto'
       }
     },
@@ -136,7 +138,6 @@ export default {
         if (typeof val === 'number') {
           return val > 0
         }
-
         return val === 'auto'
       }
     },
@@ -200,19 +201,8 @@ export default {
       default: () => [1, 1]
     },
     parent: {
-      type: Boolean,
+      type: [Boolean, String],
       default: false
-    },
-    scale: {
-      type: [Number, Array],
-      default: 1,
-      validator: (val) => {
-        if (typeof val === 'number') {
-          return val > 0
-        }
-
-        return val.length === 2 && val[0] > 0 && val[1] > 0
-      }
     },
     onDragStart: {
       type: Function,
@@ -229,6 +219,39 @@ export default {
     onResize: {
       type: Function,
       default: () => true
+    },
+    // 冲突检测
+    isConflictCheck: {
+      type: Boolean, default: false
+    },
+    // 元素对齐
+    snap: {
+      type: Boolean, default: false
+    },
+    // 当调用对齐时，用来设置组件与组件之间的对齐距离，以像素为单位
+    snapTolerance: {
+      type: Number,
+      default: 5,
+      validator: function (val) {
+        return typeof val === 'number'
+      }
+    },
+    // 缩放比例
+    scaleRatio: {
+      type: Number,
+      default: 1,
+      validator: (val) => typeof val === 'number'
+    },
+    // handle是否缩放
+    handleInfo: {
+      type: Object,
+      default: () => {
+        return {
+          size: 8,
+          offset: -5,
+          switch: true
+        }
+      }
     }
   },
 
@@ -241,10 +264,8 @@ export default {
 
       width: null,
       height: null,
-
       widthTouched: false,
       heightTouched: false,
-
       aspectFactor: null,
 
       parentWidth: null,
@@ -260,16 +281,14 @@ export default {
       enabled: this.active,
       resizing: false,
       dragging: false,
-      dragEnable: false,
-      resizeEnable: false,
       zIndex: this.z
     }
   },
 
   created: function () {
-    // eslint-disable-next-line
+    // eslint-disable-next-line 无效的prop：minWidth不能大于maxWidth
     if (this.maxWidth && this.minWidth > this.maxWidth) console.warn('[Vdr warn]: Invalid prop: minWidth cannot be greater than maxWidth')
-    // eslint-disable-next-line
+    // eslint-disable-next-line 无效prop：minHeight不能大于maxHeight'
     if (this.maxWidth && this.minHeight > this.maxHeight) console.warn('[Vdr warn]: Invalid prop: minHeight cannot be greater than maxHeight')
 
     this.resetBoundsAndMouseState()
@@ -283,23 +302,19 @@ export default {
 
     this.parentWidth = parentWidth
     this.parentHeight = parentHeight
-
     const [width, height] = getComputedSize(this.$el)
-
     this.aspectFactor = (this.w !== 'auto' ? this.w : width) / (this.h !== 'auto' ? this.h : height)
-
     this.width = this.w !== 'auto' ? this.w : width
     this.height = this.h !== 'auto' ? this.h : height
-
     this.right = this.parentWidth - this.width - this.left
     this.bottom = this.parentHeight - this.height - this.top
 
-    if (this.active) {
-      this.$emit('activated')
-    }
+    this.settingAttribute()
 
-    addEvent(document.documentElement, 'mousedown', this.deselect)
-    addEvent(document.documentElement, 'touchend touchcancel', this.deselect)
+    // 优化：取消选中的行为优先绑定在父节点上
+    const parentElement = this.$el.parentNode
+    addEvent(parentElement || document.documentElement, 'mousedown', this.deselect)
+    addEvent(parentElement || document.documentElement, 'touchend touchcancel', this.deselect)
 
     addEvent(window, 'resize', this.checkParentSize)
   },
@@ -315,6 +330,11 @@ export default {
   },
 
   methods: {
+    // 右键菜单
+    onContextMenu (e) {
+      this.$emit('contextmenu', e)
+    },
+    // 重置边界和鼠标状态
     resetBoundsAndMouseState () {
       this.mouseClickPosition = { mouseX: 0, mouseY: 0, x: 0, y: 0, w: 0, h: 0 }
 
@@ -329,28 +349,38 @@ export default {
         maxBottom: null
       }
     },
+    // 检查父元素大小
     checkParentSize () {
       if (this.parent) {
         const [newParentWidth, newParentHeight] = this.getParentSize()
+        // 修复父元素改变大小后，组件resizing时活动异常
+        this.right = newParentWidth - this.width - this.left
+        this.bottom = newParentHeight - this.height - this.top
 
         this.parentWidth = newParentWidth
         this.parentHeight = newParentHeight
-        this.right = this.parentWidth - this.width - this.left
-        this.bottom = this.parentHeight - this.height - this.top
       }
     },
+    // 获取父元素大小
     getParentSize () {
-      if (this.parent) {
+      if (this.parent === true) {
         const style = window.getComputedStyle(this.$el.parentNode, null)
-
         return [
           parseInt(style.getPropertyValue('width'), 10),
           parseInt(style.getPropertyValue('height'), 10)
         ]
       }
+      if (typeof this.parent === 'string') {
+        const parentNode = document.querySelector(this.parent)
+        if (!(parentNode instanceof HTMLElement)) {
+          throw new Error(`The selector ${this.parent} does not match any element`)
+        }
+        return [parentNode.offsetWidth, parentNode.offsetHeight]
+      }
 
       return [null, null]
     },
+    // 元素触摸按下
     elementTouchDown (e) {
       eventsFor = events.touch
 
@@ -358,9 +388,9 @@ export default {
     },
     elementMouseDown (e) {
       eventsFor = events.mouse
-
       this.elementDown(e)
     },
+    // 元素按下
     elementDown (e) {
       if (e instanceof MouseEvent && e.which !== 1) {
         return
@@ -390,7 +420,7 @@ export default {
         }
 
         if (this.draggable) {
-          this.dragEnable = true
+          this.dragging = true
         }
 
         this.mouseClickPosition.mouseX = e.touches ? e.touches[0].pageX : e.pageX
@@ -400,6 +430,8 @@ export default {
         this.mouseClickPosition.right = this.right
         this.mouseClickPosition.top = this.top
         this.mouseClickPosition.bottom = this.bottom
+        this.mouseClickPosition.w = this.width
+        this.mouseClickPosition.h = this.height
 
         if (this.parent) {
           this.bounds = this.calcDragLimits()
@@ -409,6 +441,7 @@ export default {
         addEvent(document.documentElement, eventsFor.stop, this.handleUp)
       }
     },
+    // 计算移动范围
     calcDragLimits () {
       return {
         minLeft: this.left % this.grid[0],
@@ -421,6 +454,7 @@ export default {
         maxBottom: Math.floor((this.parentHeight - this.height - this.bottom) / this.grid[1]) * this.grid[1] + this.bottom
       }
     },
+    // 取消
     deselect (e) {
       const target = e.target || e.srcElement
       const regex = new RegExp(this.className + '-([trmbl]{2})', '')
@@ -438,11 +472,13 @@ export default {
 
       this.resetBoundsAndMouseState()
     },
+    // 控制柄触摸按下
     handleTouchDown (handle, e) {
       eventsFor = events.touch
 
       this.handleDown(handle, e)
     },
+    // 控制柄按下
     handleDown (handle, e) {
       if (e instanceof MouseEvent && e.which !== 1) {
         return
@@ -462,7 +498,7 @@ export default {
         this.handle = handle
       }
 
-      this.resizeEnable = true
+      this.resizing = true
 
       this.mouseClickPosition.mouseX = e.touches ? e.touches[0].pageX : e.pageX
       this.mouseClickPosition.mouseY = e.touches ? e.touches[0].pageY : e.pageY
@@ -470,12 +506,15 @@ export default {
       this.mouseClickPosition.right = this.right
       this.mouseClickPosition.top = this.top
       this.mouseClickPosition.bottom = this.bottom
+      this.mouseClickPosition.w = this.width
+      this.mouseClickPosition.h = this.height
 
       this.bounds = this.calcResizeLimits()
 
       addEvent(document.documentElement, eventsFor.move, this.handleResize)
       addEvent(document.documentElement, eventsFor.stop, this.handleUp)
     },
+    // 计算调整大小范围
     calcResizeLimits () {
       let minW = this.minW
       let minH = this.minH
@@ -578,14 +617,16 @@ export default {
 
       return limits
     },
+    // 移动
     move (e) {
       if (this.resizing) {
         this.handleResize(e)
-      } else if (this.dragEnable) {
+      } else if (this.dragging) {
         this.handleDrag(e)
       }
     },
-    handleDrag (e) {
+    // 元素移动
+    async handleDrag  (e) {
       const axis = this.axis
       const grid = this.grid
       const bounds = this.bounds
@@ -594,44 +635,36 @@ export default {
       const tmpDeltaX = axis && axis !== 'y' ? mouseClickPosition.mouseX - (e.touches ? e.touches[0].pageX : e.pageX) : 0
       const tmpDeltaY = axis && axis !== 'x' ? mouseClickPosition.mouseY - (e.touches ? e.touches[0].pageY : e.pageY) : 0
 
-      const [deltaX, deltaY] = snapToGrid(grid, tmpDeltaX, tmpDeltaY, this.scale)
+      const [deltaX, deltaY] = snapToGrid(grid, tmpDeltaX, tmpDeltaY, this.scaleRatio)
 
       const left = restrictToBounds(mouseClickPosition.left - deltaX, bounds.minLeft, bounds.maxLeft)
       const top = restrictToBounds(mouseClickPosition.top - deltaY, bounds.minTop, bounds.maxTop)
-
       if (this.onDrag(left, top) === false) {
         return
       }
-
       const right = restrictToBounds(mouseClickPosition.right + deltaX, bounds.minRight, bounds.maxRight)
       const bottom = restrictToBounds(mouseClickPosition.bottom + deltaY, bounds.minBottom, bounds.maxBottom)
-
       this.left = left
       this.top = top
       this.right = right
       this.bottom = bottom
 
+      await this.snapCheck()
       this.$emit('dragging', this.left, this.top)
-      this.dragging = true
     },
     moveHorizontally (val) {
-      // should calculate with scale 1.
-      const [deltaX, _] = snapToGrid(this.grid, val, this.top, 1)
-
+      const [deltaX, _] = snapToGrid(this.grid, val, this.top, this.scale)
       const left = restrictToBounds(deltaX, this.bounds.minLeft, this.bounds.maxLeft)
-
       this.left = left
       this.right = this.parentWidth - this.width - left
     },
     moveVertically (val) {
-      // should calculate with scale 1.
-      const [_, deltaY] = snapToGrid(this.grid, this.left, val, 1)
-
+      const [_, deltaY] = snapToGrid(this.grid, this.left, val, this.scale)
       const top = restrictToBounds(deltaY, this.bounds.minTop, this.bounds.maxTop)
-
       this.top = top
       this.bottom = this.parentHeight - this.height - top
     },
+    // 控制柄移动
     handleResize (e) {
       let left = this.left
       let top = this.top
@@ -648,12 +681,10 @@ export default {
       if (!this.widthTouched && tmpDeltaX) {
         this.widthTouched = true
       }
-
       if (!this.heightTouched && tmpDeltaY) {
         this.heightTouched = true
       }
-
-      const [deltaX, deltaY] = snapToGrid(this.grid, tmpDeltaX, tmpDeltaY, this.scale)
+      const [deltaX, deltaY] = snapToGrid(this.grid, tmpDeltaX, tmpDeltaY, this.scaleRatio)
 
       if (this.handle.includes('b')) {
         bottom = restrictToBounds(
@@ -661,7 +692,6 @@ export default {
           this.bounds.minBottom,
           this.bounds.maxBottom
         )
-
         if (this.lockAspectRatio && this.resizingOnY) {
           right = this.right - (this.bottom - bottom) * aspectFactor
         }
@@ -671,7 +701,6 @@ export default {
           this.bounds.minTop,
           this.bounds.maxTop
         )
-
         if (this.lockAspectRatio && this.resizingOnY) {
           left = this.left - (this.top - top) * aspectFactor
         }
@@ -683,7 +712,6 @@ export default {
           this.bounds.minRight,
           this.bounds.maxRight
         )
-
         if (this.lockAspectRatio && this.resizingOnX) {
           bottom = this.bottom - (this.right - right) / aspectFactor
         }
@@ -693,7 +721,6 @@ export default {
           this.bounds.minLeft,
           this.bounds.maxLeft
         )
-
         if (this.lockAspectRatio && this.resizingOnX) {
           top = this.top - (this.left - left) / aspectFactor
         }
@@ -701,89 +728,374 @@ export default {
 
       const width = computeWidth(this.parentWidth, left, right)
       const height = computeHeight(this.parentHeight, top, bottom)
-
       if (this.onResize(this.handle, left, top, width, height) === false) {
         return
       }
-
       this.left = left
       this.top = top
       this.right = right
       this.bottom = bottom
       this.width = width
       this.height = height
-
       this.$emit('resizing', this.left, this.top, this.width, this.height)
-      this.resizing = true
     },
     changeWidth (val) {
-      // should calculate with scale 1.
-      const [newWidth, _] = snapToGrid(this.grid, val, 0, 1)
-
+      const [newWidth, _] = snapToGrid(this.grid, val, 0, this.scale)
       let right = restrictToBounds(
         (this.parentWidth - newWidth - this.left),
         this.bounds.minRight,
         this.bounds.maxRight
       )
       let bottom = this.bottom
-
       if (this.lockAspectRatio) {
         bottom = this.bottom - (this.right - right) / this.aspectFactor
       }
-
       const width = computeWidth(this.parentWidth, this.left, right)
       const height = computeHeight(this.parentHeight, this.top, bottom)
-
       this.right = right
       this.bottom = bottom
       this.width = width
       this.height = height
     },
     changeHeight (val) {
-      // should calculate with scale 1.
-      const [_, newHeight] = snapToGrid(this.grid, 0, val, 1)
-
+      const [_, newHeight] = snapToGrid(this.grid, 0, val, this.scale)
       let bottom = restrictToBounds(
         (this.parentHeight - newHeight - this.top),
         this.bounds.minBottom,
         this.bounds.maxBottom
       )
       let right = this.right
-
       if (this.lockAspectRatio) {
         right = this.right - (this.bottom - bottom) * this.aspectFactor
       }
-
       const width = computeWidth(this.parentWidth, this.left, right)
       const height = computeHeight(this.parentHeight, this.top, bottom)
-
       this.right = right
       this.bottom = bottom
       this.width = width
       this.height = height
     },
-    handleUp (e) {
+    // 从控制柄松开
+    async handleUp (e) {
       this.handle = null
 
-      this.resetBoundsAndMouseState()
-
-      this.dragEnable = false
-      this.resizeEnable = false
+      // 初始化辅助线数据
+      const temArr = new Array(3).fill({ display: false, position: '', origin: '', lineLength: '' })
+      const refLine = { vLine: [], hLine: [] }
+      for (let i in refLine) { refLine[i] = JSON.parse(JSON.stringify(temArr)) }
 
       if (this.resizing) {
         this.resizing = false
+        await this.conflictCheck()
+        this.$emit('refLineParams', refLine)
         this.$emit('resizestop', this.left, this.top, this.width, this.height)
       }
-
       if (this.dragging) {
         this.dragging = false
+        await this.conflictCheck()
+        this.$emit('refLineParams', refLine)
         this.$emit('dragstop', this.left, this.top)
       }
-
+      this.resetBoundsAndMouseState()
       removeEvent(document.documentElement, eventsFor.move, this.handleResize)
+    },
+    // 新增方法 ↓↓↓
+    // 设置属性
+    settingAttribute () {
+      // 设置冲突检测
+      this.$el.setAttribute('data-is-check', `${this.isConflictCheck}`)
+      // 设置对齐元素
+      this.$el.setAttribute('data-is-snap', `${this.snap}`)
+    },
+    // 冲突检测
+    conflictCheck () {
+      const top = this.top
+      const left = this.left
+      const width = this.width
+      const height = this.height
+
+      if (this.isConflictCheck) {
+        const nodes = this.$el.parentNode.childNodes // 获取当前父节点下所有子节点
+        for (let item of nodes) {
+          if (item.className !== undefined && !item.className.includes(this.classNameActive) && item.getAttribute('data-is-check') !== null && item.getAttribute('data-is-check') !== 'false') {
+            const tw = item.offsetWidth
+            const th = item.offsetHeight
+            // 正则获取left与right
+            let [tl, tt] = this.formatTransformVal(item.style.transform)
+
+            // 左上角与右下角重叠
+            const tfAndBr = (top >= tt && left >= tl && tt + th > top && tl + tw > left) || (top <= tt && left < tl && top + height > tt && left + width > tl)
+            // 右上角与左下角重叠
+            const brAndTf = (left <= tl && top >= tt && left + width > tl && top < tt + th) || (top < tt && left > tl && top + height > tt && left < tl + tw)
+            // 下边与上边重叠
+            const bAndT = (top <= tt && left >= tl && top + height > tt && left < tl + tw) || (top >= tt && left <= tl && top < tt + th && left > tl + tw)
+            // 上边与下边重叠（宽度不一样）
+            const tAndB = (top <= tt && left >= tl && top + height > tt && left < tl + tw) || (top >= tt && left <= tl && top < tt + th && left > tl + tw)
+            // 左边与右边重叠
+            const lAndR = (left >= tl && top >= tt && left < tl + tw && top < tt + th) || (top > tt && left <= tl && left + width > tl && top < tt + th)
+            // 左边与右边重叠（高度不一样）
+            const rAndL = (top <= tt && left >= tl && top + height > tt && left < tl + tw) || (top >= tt && left <= tl && top < tt + th && left + width > tl)
+
+            // 如果冲突，就将回退到移动前的位置
+            if (tfAndBr || brAndTf || bAndT || tAndB || lAndR || rAndL) {
+              this.top = this.mouseClickPosition.top
+              this.left = this.mouseClickPosition.left
+              this.right = this.mouseClickPosition.right
+              this.bottom = this.mouseClickPosition.bottom
+              this.width = this.mouseClickPosition.w
+              this.height = this.mouseClickPosition.h
+              this.$emit('resizing', this.left, this.top, this.width, this.height)
+            }
+          }
+        }
+      }
+    },
+    // 检测对齐元素
+    async snapCheck () {
+      let width = this.width
+      let height = this.height
+      if (this.snap) {
+        let activeLeft = this.left
+        let activeRight = this.left + width
+        let activeTop = this.top
+        let activeBottom = this.top + height
+
+        // 初始化辅助线数据
+        const temArr = new Array(3).fill({ display: false, position: '', origin: '', lineLength: '' })
+        const refLine = { vLine: [], hLine: [] }
+        for (let i in refLine) { refLine[i] = JSON.parse(JSON.stringify(temArr)) }
+
+        // 获取当前父节点下所有子节点
+        const nodes = this.$el.parentNode.childNodes
+
+        let tem = {
+          value: { x: [[], [], []], y: [[], [], []] },
+          display: [],
+          position: []
+        }
+        const { groupWidth, groupHeight, groupLeft, groupTop, bln } = await this.getActiveAll(nodes)
+        if (!bln) {
+          width = groupWidth
+          height = groupHeight
+          activeLeft = groupLeft
+          activeRight = groupLeft + groupWidth
+          activeTop = groupTop
+          activeBottom = groupTop + groupHeight
+        }
+        for (let item of nodes) {
+          if (item.className !== undefined && !item.className.includes(this.classNameActive) && item.getAttribute('data-is-snap') !== null && item.getAttribute('data-is-snap') !== 'false') {
+            const w = item.offsetWidth
+            const h = item.offsetHeight
+            const [l, t] = this.formatTransformVal(item.style.transform)
+            const r = l + w // 对齐目标right
+            const b = t + h // 对齐目标的bottom
+
+            const hc = Math.abs((activeTop + height / 2) - (t + h / 2)) <= this.snapTolerance // 水平中线
+            const vc = Math.abs((activeLeft + width / 2) - (l + w / 2)) <= this.snapTolerance // 垂直中线
+
+            const ts = Math.abs(t - activeBottom) <= this.snapTolerance // 从上到下
+            const TS = Math.abs(b - activeBottom) <= this.snapTolerance // 从上到下
+            const bs = Math.abs(t - activeTop) <= this.snapTolerance // 从下到上
+            const BS = Math.abs(b - activeTop) <= this.snapTolerance // 从下到上
+
+            const ls = Math.abs(l - activeRight) <= this.snapTolerance // 外左
+            const LS = Math.abs(r - activeRight) <= this.snapTolerance // 外左
+            const rs = Math.abs(l - activeLeft) <= this.snapTolerance // 外右
+            const RS = Math.abs(r - activeLeft) <= this.snapTolerance // 外右
+
+            tem['display'] = [ts, TS, bs, BS, hc, hc, ls, LS, rs, RS, vc, vc]
+            tem['position'] = [t, b, t, b, t + h / 2, t + h / 2, l, r, l, r, l + w / 2, l + w / 2]
+
+            // fix：中线自动对齐，元素可能超过父元素边界的问题
+            if (ts) {
+              if (bln) {
+                this.top = Math.max(t - height, this.bounds.minTop)
+                this.bottom = this.parentHeight - this.top - height
+              }
+              tem.value.y[0].push(l, r, activeLeft, activeRight)
+            }
+            if (bs) {
+              if (bln) {
+                this.top = t
+                this.bottom = this.parentHeight - this.top - height
+              }
+              tem.value.y[0].push(l, r, activeLeft, activeRight)
+            }
+            if (TS) {
+              if (bln) {
+                this.top = Math.max(b - height, this.bounds.minTop)
+                this.bottom = this.parentHeight - this.top - height
+              }
+              tem.value.y[1].push(l, r, activeLeft, activeRight)
+            }
+            if (BS) {
+              if (bln) {
+                this.top = b
+                this.bottom = this.parentHeight - this.top - height
+              }
+              tem.value.y[1].push(l, r, activeLeft, activeRight)
+            }
+
+            if (ls) {
+              if (bln) {
+                this.left = Math.max(l - width, this.bounds.minLeft)
+                this.right = this.parentWidth - this.left - width
+              }
+              tem.value.x[0].push(t, b, activeTop, activeBottom)
+            }
+            if (rs) {
+              if (bln) {
+                this.left = l
+                this.right = this.parentWidth - this.left - width
+              }
+              tem.value.x[0].push(t, b, activeTop, activeBottom)
+            }
+            if (LS) {
+              if (bln) {
+                this.left = Math.max(r - width, this.bounds.minLeft)
+                this.right = this.parentWidth - this.left - width
+              }
+              tem.value.x[1].push(t, b, activeTop, activeBottom)
+            }
+            if (RS) {
+              if (bln) {
+                this.left = r
+                this.right = this.parentWidth - this.left - width
+              }
+              tem.value.x[1].push(t, b, activeTop, activeBottom)
+            }
+
+            if (hc) {
+              if (bln) {
+                this.top = Math.max(t + h / 2 - height / 2, this.bounds.minTop)
+                this.bottom = this.parentHeight - this.top - height
+              }
+              tem.value.y[2].push(l, r, activeLeft, activeRight)
+            }
+            if (vc) {
+              if (bln) {
+                this.left = Math.max(l + w / 2 - width / 2, this.bounds.minLeft)
+                this.right = this.parentWidth - this.left - width
+              }
+              tem.value.x[2].push(t, b, activeTop, activeBottom)
+            }
+            // 辅助线坐标与是否显示(display)对应的数组,易于循环遍历
+            const arrTem = [0, 1, 0, 1, 2, 2, 0, 1, 0, 1, 2, 2]
+            for (let i = 0; i <= arrTem.length; i++) {
+              // 前6为Y辅助线,后6为X辅助线
+              const xory = i < 6 ? 'y' : 'x'
+              const horv = i < 6 ? 'hLine' : 'vLine'
+              if (tem.display[i]) {
+                const { origin, length } = this.calcLineValues(tem.value[xory][arrTem[i]])
+                refLine[horv][arrTem[i]].display = tem.display[i]
+                refLine[horv][arrTem[i]].position = tem.position[i] + 'px'
+                refLine[horv][arrTem[i]].origin = origin
+                refLine[horv][arrTem[i]].lineLength = length
+              }
+            }
+          }
+        }
+        this.$emit('refLineParams', refLine)
+      }
+    },
+    calcLineValues (arr) {
+      const length = Math.max(...arr) - Math.min(...arr) + 'px'
+      const origin = Math.min(...arr) + 'px'
+      return { length, origin }
+    },
+    async getActiveAll (nodes) {
+      const activeAll = []
+      const XArray = []
+      const YArray = []
+      let groupWidth = 0
+      let groupHeight = 0
+      let groupLeft = 0
+      let groupTop = 0
+      for (let item of nodes) {
+        if (item.className !== undefined && item.className.includes(this.classNameActive)) {
+          activeAll.push(item)
+        }
+      }
+      const AllLength = activeAll.length
+      if (AllLength > 1) {
+        for (let i of activeAll) {
+          const l = i.offsetLeft
+          const r = l + i.offsetWidth
+          const t = i.offsetTop
+          const b = t + i.offsetHeight
+          XArray.push(t, b)
+          YArray.push(l, r)
+        }
+        groupWidth = Math.max(...YArray) - Math.min(...YArray)
+        groupHeight = Math.max(...XArray) - Math.min(...XArray)
+        groupLeft = Math.min(...YArray)
+        groupTop = Math.min(...XArray)
+      }
+      const bln = AllLength === 1
+      return { groupWidth, groupHeight, groupLeft, groupTop, bln }
+    },
+    // 正则获取left与top
+    formatTransformVal (string) {
+      let [left, top] = string.replace(/[^0-9\-,]/g, '').split(',')
+      if (top === undefined) top = 0
+      return [+left, +top]
     }
   },
   computed: {
+    handleStyle () {
+      return (stick) => {
+        if (!this.handleInfo.switch) return { display: this.enabled ? 'block' : 'none' }
+
+        const size = (this.handleInfo.size / this.scaleRatio).toFixed(2)
+        const offset = (this.handleInfo.offset / this.scaleRatio).toFixed(2)
+        const center = (size / 2).toFixed(2)
+
+        const styleMap = {
+          tl: {
+            top: `${offset}px`,
+            left: `${offset}px`
+          },
+          tm: {
+            top: `${offset}px`,
+            left: `calc(50% - ${center}px)`
+          },
+          tr: {
+            top: `${offset}px`,
+            right: `${offset}px`
+          },
+          mr: {
+            top: `calc(50% - ${center}px)`,
+            right: `${offset}px`
+          },
+          br: {
+            bottom: `${offset}px`,
+            right: `${offset}px`
+          },
+          bm: {
+            bottom: `${offset}px`,
+            right: `calc(50% - ${center}px)`
+          },
+          bl: {
+            bottom: `${offset}px`,
+            left: `${offset}px`
+          },
+          ml: {
+            top: `calc(50% - ${center}px)`,
+            left: `${offset}px`
+          }
+        }
+        const stickStyle = {
+          width: `${size}px`,
+          height: `${size}px`,
+          top: styleMap[stick].top,
+          left: styleMap[stick].left,
+          right: styleMap[stick].right,
+          bottom: styleMap[stick].bottom
+        }
+        stickStyle.display = this.enabled ? 'block' : 'none'
+        return stickStyle
+      }
+    },
     style () {
       return {
         transform: `translate(${this.left}px, ${this.top}px)`,
@@ -793,6 +1105,7 @@ export default {
         ...(this.dragging && this.disableUserSelect ? userSelectNone : userSelectAuto)
       }
     },
+    // 控制柄显示与否
     actualHandles () {
       if (!this.resizable) return []
 
@@ -804,7 +1117,6 @@ export default {
           return 'auto'
         }
       }
-
       return this.width + 'px'
     },
     computedHeight () {
@@ -813,7 +1125,6 @@ export default {
           return 'auto'
         }
       }
-
       return this.height + 'px'
     },
     resizingOnX () {

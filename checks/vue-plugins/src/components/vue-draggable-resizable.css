@@ -2,59 +2,71 @@
   touch-action: none;
   position: absolute;
   box-sizing: border-box;
-  border: 1px dashed black;
+  border: 1px dashed #d6d6d6;
 }
 .handle {
   box-sizing: border-box;
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background: #EEE;
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
   border: 1px solid #333;
+  box-shadow: 0 0 2px #bbb;
 }
 .handle-tl {
-  top: -10px;
-  left: -10px;
+  top: -5px;
+  left: -5px;
   cursor: nw-resize;
 }
 .handle-tm {
-  top: -10px;
-  left: 50%;
-  margin-left: -5px;
+  top: -5px;
+  left: calc(50% - 4px);
+  /*margin-left: -5px;*/
   cursor: n-resize;
 }
 .handle-tr {
-  top: -10px;
-  right: -10px;
+  top: -5px;
+  right: -5px;
   cursor: ne-resize;
 }
 .handle-ml {
-  top: 50%;
-  margin-top: -5px;
-  left: -10px;
+  top: calc(50% - 4px);
+  /*margin-top: -5px;*/
+  left: -5px;
   cursor: w-resize;
 }
 .handle-mr {
-  top: 50%;
-  margin-top: -5px;
-  right: -10px;
+  top: calc(50% - 4px);
+  /*margin-top: -5px;*/
+  right: -5px;
   cursor: e-resize;
 }
 .handle-bl {
-  bottom: -10px;
-  left: -10px;
+  bottom: -5px;
+  left: -5px;
   cursor: sw-resize;
 }
 .handle-bm {
-  bottom: -10px;
-  left: 50%;
-  margin-left: -5px;
+  bottom: -5px;
+  left: calc(50% - 4px);
+  /*margin-left: -5px;*/
   cursor: s-resize;
 }
 .handle-br {
-  bottom: -10px;
-  right: -10px;
+  bottom: -5px;
+  right: -5px;
   cursor: se-resize;
+}
+.ref-line{
+  position: absolute;
+  background-color: rgb(255, 0, 204);
+  z-index: 9999;
+}
+.v-line{
+  width: 1px;
+}
+.h-line{
+  height: 1px;
 }
 @media only screen and (max-width: 768px) {
   [class*="handle-"]:before {

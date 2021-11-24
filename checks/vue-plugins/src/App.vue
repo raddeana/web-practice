@@ -1,43 +1,44 @@
 <template>
-  <div id="app" @mousedown="handleAppMD">
-    <div class="test">
-    </div>
-    <draggable
-      tag="div"
-      class="draggable-box"
-      v-bind="{
-        group: 'form-draggable',
-        ghostClass: 'moving',
-        animation: 180,
-        handle: '.sortable'
-      }"
-      v-model="list"
+  <draggable
+    tag="div"
+    class="draggable-box"
+    v-bind="{
+      group: 'form-draggable',
+      ghostClass: 'moving',
+      animation: 180
+    }"
+    v-model="containers"
+  >
+    <div
+      v-for="item in containers"
+      class="container"
+      @mousedown="handleMd"
+      @pointerdown="handlePd"
     >
-      <transition-group tag="div" name="list" :class="['list-main']">
-        <template v-for="item in list">
-          <draggable-resizable
-            v-if="item.id > 80000"
-            :key="item.id"
-            @mousedown.native.stop
-            :parent="true"
-            :h="100"
-          >
-            <item :item="item" :class="['form-col', 'sortable']" />
-          </draggable-resizable>
-          <item v-else :key="item.id" :item="item" :class="['form-col', 'sortable']" @mousedown.native.stop />
-        </template>
-      </transition-group>
-    </draggable>
-  </div>
+      <h4 style="position: absolute;">{{item.title}}</h4>
+      <draggable-resizable
+        v-for="item in list"
+        :key="item.id"
+        @mousedown.native.stop
+        @pointerdown.native.stop
+        :grid="[10,10]"
+        :parent="true"
+        h="auto"
+        w="auto"
+      >
+        <item :item="item" :class="['form-col', 'sortable']" />
+      </draggable-resizable>
+    </div>
+  </draggable>
 </template>
 <style lang="scss">
-#app {
-  height: 540px;
-  width: 730px;
+.container {
+  height: 340px;
+  width: 530px;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  border: 1px solid #2c3e50;
 }
 
 .draggable-box {
@@ -59,7 +60,6 @@
 .vdr{
   -ms-touch-action:none;
   touch-action:none;
-  border:1px dashed #000
 }
 </style>
 <script>
@@ -77,12 +77,14 @@ export default {
   },
   data: function () {
     return {
-      list: []
+      list: [],
+      containers: []
     };
   },
   methods: {
     initData () {
       const list = [];
+      const containers = [];
 
       for (let i = 0; i < 15; i ++) {
         list.push({
@@ -90,13 +92,24 @@ export default {
           title: (Math.random() * 100).toFixed(2),
           msg: Math.random() * 10000,
         });
+
+        containers.push({
+          id: Math.random() * 100000,
+          title: (Math.random() * 100).toFixed(2),
+          msg: Math.random() * 10000,
+        });
       }
 
       this.list = list;
+      this.containers = containers;
     },
 
-    handleAppMD () {
-      console.log('app recive mousedown');
+    handleMd () {
+      console.log('container recive mousedown');
+    },
+
+    handlePd () {
+      console.log('container recive pointerdown');
     }
   },
   created () {
