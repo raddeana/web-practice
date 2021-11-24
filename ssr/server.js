@@ -1,38 +1,26 @@
-const devServer = require("./dev.server.js");
-const express = require("express");
+/**
+ * 服务器
+ * @author Philip
+ */
+const Vue = require('vue')
+const server = require('express')()
+const renderer = require('vue-server-renderer').createRenderer({
+    template: require('fs').readFileSync('./public/index.html', 'utf-8')
+});
 
-const serve = require("express-static");
-const path = require("path");
+server.get('*', (req, res) => {
+  const app = new Vue({
+    template: `<div>CNA</div>`
+  });
 
-const app = express();
-app.use('/static', serve(__dirname + path.sep + "static"));
-const vueRender = require("vue-server-renderer");
+  renderer.renderToString(app, (err, html) => {
+    if (err) {
+      res.status(500).end('Internal Server Error')
+      return
+    }
 
-app.get('*',(request,respones) => {
-    respones.status(200);
-    respones.setHeader("Content-Type","text/html;charset-utf-8;");
-
-    devServer((serverBundle, clientBundle, template) => {
-        let render = vueRender.createBundleRenderer(serverBundle,{
-            template,
-            clientManifest:clientBundle.data,
-            //  每次创建一个独立的上下文
-            renInNewContext:false
-        }); 
-        render.renderToString({
-            url:request.url
-        }).then((html) => {
-            console.log('鹅肝');
-            console.log(html);
-            respones.end(html);
-        }).catch(error => {
-            console.log('error');
-            console.log(error);
-          respones.end(JSON.stringify(error));
-        });
-    });
+    res.end(html);
+  })
 })
 
-app.listen(3031,() => {
-    console.log("服务已开启")
-});
+server.listen(8080)

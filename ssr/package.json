@@ -3,7 +3,6 @@
   "version": "0.1.1",
   "description": "ssr practice lib",
   "scripts": {
-    "start-simple-server": "node simple-server.js --trace-warnings",
     "start": "node server.js",
     "build-client": "webpack --config webpack.client.conf.js",
     "build-server": "webpack --config webpack.server.conf.js"
