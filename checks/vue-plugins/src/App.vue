@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @mousedown="handleAppMD">
     <div class="test">
     </div>
     <draggable
@@ -9,7 +9,7 @@
         group: 'form-draggable',
         ghostClass: 'moving',
         animation: 180,
-        handle: '.draggable'
+        handle: '.sortable'
       }"
       v-model="list"
     >
@@ -22,15 +22,9 @@
             :parent="true"
             :h="100"
           >
-            <item :item="item" />
+            <item :item="item" :class="['form-col', 'sortable']" />
           </draggable-resizable>
-          <div
-            v-else
-            :key="item.id"
-            :class="['form-col', 'draggable']"
-          >
-            <item :item="item" />
-          </div>
+          <item v-else :key="item.id" :item="item" :class="['form-col', 'sortable']" @mousedown.native.stop />
         </template>
       </transition-group>
     </draggable>
@@ -38,9 +32,8 @@
 </template>
 <style lang="scss">
 #app {
-  height: 500px;
-  width: 500px;
-  border: 1px solid #333;
+  height: 540px;
+  width: 730px;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
@@ -58,6 +51,7 @@
   height: 100%;
   width: 100%;
   display: flex;
+  align-content: flex-start;
   flex-wrap: wrap;
   background-color: transparent;
 }
@@ -70,8 +64,8 @@
 </style>
 <script>
 import draggable from './components/draggable';
-import draggableResizable from 'vue-draggable-resizable';
-import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
+import draggableResizable from './components/vue-draggable-resizable.vue';
+import './components/vue-draggable-resizable.css'
 import item from './components/item.vue'
 
 export default {
@@ -99,6 +93,10 @@ export default {
       }
 
       this.list = list;
+    },
+
+    handleAppMD () {
+      console.log('app recive mousedown');
     }
   },
   created () {

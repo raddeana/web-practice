@@ -471,7 +471,6 @@ Sortable.prototype = /** @lends Sortable.prototype */ {
 			filter = options.filter;
 
 		_saveInputCheckedState(el);
-
 		// Don't trigger start event when an element is been dragged, otherwise the evt.oldindex always wrong when set option.group.
 		if (dragEl) {
 			return;
@@ -654,6 +653,8 @@ Sortable.prototype = /** @lends Sortable.prototype */ {
 				dragStartFn();
 			}
 		}
+
+		console.log('分析判断和综合判断', dragEl);
 	},
 
 	_delayedDragTouchMoveHandler: function (/** TouchEvent|PointerEvent **/e) {
@@ -1331,9 +1332,6 @@ Sortable.prototype = /** @lends Sortable.prototype */ {
 
 	_onDrop: function (/**Event*/evt) {
 		console.log('i do a drop1', dragEl);
-		window.getDragEl = function () {
-			return dragEl;
-		};
 		let el = this.el,
 			options = this.options;
 

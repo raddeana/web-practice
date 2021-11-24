@@ -4,10 +4,21 @@
     <p>{{ item.msg }}</p>
   </div>
 </template>
-<style scoped>
+<style lang="scss" scoped>
 .item {
+  height: 60px;
+  width: 180px;
   border: 1px solid #333;
   cursor: pointer;
+
+  label {
+    margin: 5px 0 0 0;
+    display: block;
+  }
+
+  p {
+    margin: 10px 0 0 0;
+  }
 }
 </style>
 <script>
