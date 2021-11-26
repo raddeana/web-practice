@@ -1,15 +1,17 @@
 <template>
   <div class="item">
-    <label>{{ item.title }}</label>
-    <p>{{ item.msg }}</p>
+    <label>{{ p.title }}</label>
+    <p>{{ p.msg }}</p>
+    <button class="btn" @click="handleClick">XXX</button>
+    <subitem :q="p" />
   </div>
 </template>
 <style lang="scss" scoped>
 .item {
-  height: 60px;
-  width: 180px;
-  border: 1px solid #333;
-  cursor: pointer;
+  .btn {
+    color: red;
+    font-size: 18px;
+  }
 
   label {
     margin: 5px 0 0 0;
@@ -18,14 +20,24 @@
 
   p {
     margin: 10px 0 0 0;
-  }
+  } 
 }
 </style>
 <script>
+import subitem from './subitem';
 export default {
   name: 'item',
   props: {
-    item: Object
+    p: Object
+  },
+  components: {
+    subitem
+  },
+  methods: {
+    handleClick () {
+      alert();
+      this.$emit('kkk', '金暴的崛起');    
+    }
   }
 }
 </script>

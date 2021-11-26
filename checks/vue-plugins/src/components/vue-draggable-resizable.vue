@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import { matchesSelectorToParentElements, getComputedSize, addEvent, removeEvent } from '../utils/dom'
-import { computeWidth, computeHeight, restrictToBounds, snapToGrid } from '../utils/fns'
+import { matchesSelectorToParentElements, getComputedSize, addEvent, removeEvent } from './utils/dom'
+import { computeWidth, computeHeight, restrictToBounds, snapToGrid } from './utils/fns'
 
 const events = {
   mouse: {
