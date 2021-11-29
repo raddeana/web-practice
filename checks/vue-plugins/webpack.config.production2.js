@@ -1,6 +1,7 @@
 {
-  mode: 'development',
+  mode: 'production',
   context: 'D:\\github\\web-practice\\checks\\vue-plugins',
+  devtool: 'source-map',
   node: {
     setImmediate: false,
     process: 'mock',
@@ -12,9 +13,9 @@
   },
   output: {
     path: 'D:\\github\\web-practice\\checks\\vue-plugins\\dist',
-    filename: 'js/[name].js',
+    filename: 'js/[name].[contenthash:8].js',
     publicPath: '/',
-    chunkFilename: 'js/[name].js'
+    chunkFilename: 'js/[name].[contenthash:8].js'
   },
   resolve: {
     alias: {
@@ -71,7 +72,7 @@
             loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\cache-loader\\dist\\cjs.js',
             options: {
               cacheDirectory: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\.cache\\vue-loader',
-              cacheIdentifier: 'ef29477c'
+              cacheIdentifier: '5d49c5f3'
             }
           },
           /* config.module.rule('vue').use('vue-loader') */
@@ -82,7 +83,7 @@
                 whitespace: 'condense'
               },
               cacheDirectory: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\.cache\\vue-loader',
-              cacheIdentifier: 'ef29477c',
+              cacheIdentifier: '5d49c5f3',
               shadowMode: true
             }
           }
@@ -195,12 +196,12 @@
           {
             resourceQuery: /module/,
             use: [
-              /* config.module.rule('css').oneOf('vue-modules').use('vue-style-loader') */
+              /* config.module.rule('css').oneOf('vue-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('css').oneOf('vue-modules').use('css-loader') */
@@ -230,11 +231,10 @@
           {
             resourceQuery: /\?vue/,
             use: [
-              /* config.module.rule('css').oneOf('vue').use('vue-style-loader') */
+              /* config.module.rule('css').oneOf('vue').use('extract-css-loader') */
               {
                 loader: 'vue-style-loader',
                 options: {
-                  sourceMap: false,
                   shadowMode: true
                 }
               },
@@ -262,12 +262,12 @@
           {
             test: /\.module\.\w+$/,
             use: [
-              /* config.module.rule('css').oneOf('normal-modules').use('vue-style-loader') */
+              /* config.module.rule('css').oneOf('normal-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('css').oneOf('normal-modules').use('css-loader') */
@@ -296,12 +296,12 @@
           /* config.module.rule('css').oneOf('normal') */
           {
             use: [
-              /* config.module.rule('css').oneOf('normal').use('vue-style-loader') */
+              /* config.module.rule('css').oneOf('normal').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('css').oneOf('normal').use('css-loader') */
@@ -334,12 +334,12 @@
           {
             resourceQuery: /module/,
             use: [
-              /* config.module.rule('postcss').oneOf('vue-modules').use('vue-style-loader') */
+              /* config.module.rule('postcss').oneOf('vue-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('postcss').oneOf('vue-modules').use('css-loader') */
@@ -369,12 +369,12 @@
           {
             resourceQuery: /\?vue/,
             use: [
-              /* config.module.rule('postcss').oneOf('vue').use('vue-style-loader') */
+              /* config.module.rule('postcss').oneOf('vue').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('postcss').oneOf('vue').use('css-loader') */
@@ -401,12 +401,12 @@
           {
             test: /\.module\.\w+$/,
             use: [
-              /* config.module.rule('postcss').oneOf('normal-modules').use('vue-style-loader') */
+              /* config.module.rule('postcss').oneOf('normal-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('postcss').oneOf('normal-modules').use('css-loader') */
@@ -435,12 +435,12 @@
           /* config.module.rule('postcss').oneOf('normal') */
           {
             use: [
-              /* config.module.rule('postcss').oneOf('normal').use('vue-style-loader') */
+              /* config.module.rule('postcss').oneOf('normal').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('postcss').oneOf('normal').use('css-loader') */
@@ -473,12 +473,12 @@
           {
             resourceQuery: /module/,
             use: [
-              /* config.module.rule('scss').oneOf('vue-modules').use('vue-style-loader') */
+              /* config.module.rule('scss').oneOf('vue-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('scss').oneOf('vue-modules').use('css-loader') */
@@ -515,12 +515,11 @@
           {
             resourceQuery: /\?vue/,
             use: [
-              /* config.module.rule('scss').oneOf('vue').use('vue-style-loader') */
+              /* config.module.rule('scss').oneOf('vue').use('extract-css-loader') */
               {
                 loader: 'vue-style-loader',
                 options: {
-                  sourceMap: false,
-                  shadowMode: true
+                  shadowMode: false
                 }
               },
               /* config.module.rule('scss').oneOf('vue').use('css-loader') */
@@ -554,12 +553,12 @@
           {
             test: /\.module\.\w+$/,
             use: [
-              /* config.module.rule('scss').oneOf('normal-modules').use('vue-style-loader') */
+              /* config.module.rule('scss').oneOf('normal-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('scss').oneOf('normal-modules').use('css-loader') */
@@ -595,12 +594,12 @@
           /* config.module.rule('scss').oneOf('normal') */
           {
             use: [
-              /* config.module.rule('scss').oneOf('normal').use('vue-style-loader') */
+              /* config.module.rule('scss').oneOf('normal').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('scss').oneOf('normal').use('css-loader') */
@@ -640,12 +639,12 @@
           {
             resourceQuery: /module/,
             use: [
-              /* config.module.rule('sass').oneOf('vue-modules').use('vue-style-loader') */
+              /* config.module.rule('sass').oneOf('vue-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('sass').oneOf('vue-modules').use('css-loader') */
@@ -685,12 +684,12 @@
           {
             resourceQuery: /\?vue/,
             use: [
-              /* config.module.rule('sass').oneOf('vue').use('vue-style-loader') */
+              /* config.module.rule('sass').oneOf('vue').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('sass').oneOf('vue').use('css-loader') */
@@ -727,12 +726,12 @@
           {
             test: /\.module\.\w+$/,
             use: [
-              /* config.module.rule('sass').oneOf('normal-modules').use('vue-style-loader') */
+              /* config.module.rule('sass').oneOf('normal-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('sass').oneOf('normal-modules').use('css-loader') */
@@ -771,12 +770,12 @@
           /* config.module.rule('sass').oneOf('normal') */
           {
             use: [
-              /* config.module.rule('sass').oneOf('normal').use('vue-style-loader') */
+              /* config.module.rule('sass').oneOf('normal').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('sass').oneOf('normal').use('css-loader') */
@@ -819,12 +818,12 @@
           {
             resourceQuery: /module/,
             use: [
-              /* config.module.rule('less').oneOf('vue-modules').use('vue-style-loader') */
+              /* config.module.rule('less').oneOf('vue-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('less').oneOf('vue-modules').use('css-loader') */
@@ -861,12 +860,12 @@
           {
             resourceQuery: /\?vue/,
             use: [
-              /* config.module.rule('less').oneOf('vue').use('vue-style-loader') */
+              /* config.module.rule('less').oneOf('vue').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('less').oneOf('vue').use('css-loader') */
@@ -900,12 +899,12 @@
           {
             test: /\.module\.\w+$/,
             use: [
-              /* config.module.rule('less').oneOf('normal-modules').use('vue-style-loader') */
+              /* config.module.rule('less').oneOf('normal-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('less').oneOf('normal-modules').use('css-loader') */
@@ -941,12 +940,12 @@
           /* config.module.rule('less').oneOf('normal') */
           {
             use: [
-              /* config.module.rule('less').oneOf('normal').use('vue-style-loader') */
+              /* config.module.rule('less').oneOf('normal').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('less').oneOf('normal').use('css-loader') */
@@ -986,12 +985,12 @@
           {
             resourceQuery: /module/,
             use: [
-              /* config.module.rule('stylus').oneOf('vue-modules').use('vue-style-loader') */
+              /* config.module.rule('stylus').oneOf('vue-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('stylus').oneOf('vue-modules').use('css-loader') */
@@ -1029,12 +1028,12 @@
           {
             resourceQuery: /\?vue/,
             use: [
-              /* config.module.rule('stylus').oneOf('vue').use('vue-style-loader') */
+              /* config.module.rule('stylus').oneOf('vue').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('stylus').oneOf('vue').use('css-loader') */
@@ -1069,12 +1068,12 @@
           {
             test: /\.module\.\w+$/,
             use: [
-              /* config.module.rule('stylus').oneOf('normal-modules').use('vue-style-loader') */
+              /* config.module.rule('stylus').oneOf('normal-modules').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('stylus').oneOf('normal-modules').use('css-loader') */
@@ -1111,12 +1110,12 @@
           /* config.module.rule('stylus').oneOf('normal') */
           {
             use: [
-              /* config.module.rule('stylus').oneOf('normal').use('vue-style-loader') */
+              /* config.module.rule('stylus').oneOf('normal').use('extract-css-loader') */
               {
-                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\vue-style-loader\\index.js',
+                loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\mini-css-extract-plugin\\dist\\loader.js',
                 options: {
-                  sourceMap: false,
-                  shadowMode: false
+                  hmr: false,
+                  publicPath: '../'
                 }
               },
               /* config.module.rule('stylus').oneOf('normal').use('css-loader') */
@@ -1161,8 +1160,12 @@
             loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\cache-loader\\dist\\cjs.js',
             options: {
               cacheDirectory: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\.cache\\babel-loader',
-              cacheIdentifier: '55c7eb44'
+              cacheIdentifier: '77051ed2'
             }
+          },
+          /* config.module.rule('js').use('thread-loader') */
+          {
+            loader: 'D:\\github\\web-practice\\checks\\vue-plugins\\node_modules\\thread-loader\\dist\\cjs.js'
           },
           /* config.module.rule('js').use('babel-loader') */
           {
@@ -1239,7 +1242,7 @@
     new DefinePlugin(
       {
         'process.env': {
-          NODE_ENV: '"development"',
+          NODE_ENV: '"production"',
           BASE_URL: '"/"'
         }
       }
@@ -1257,11 +1260,49 @@
         ]
       }
     ),
+    /* config.plugin('extract-css') */
+    new MiniCssExtractPlugin(
+      {
+        filename: 'css/[name].[contenthash:8].css',
+        chunkFilename: 'css/[name].[contenthash:8].css'
+      }
+    ),
+    /* config.plugin('optimize-css') */
+    new OptimizeCssnanoPlugin(
+      {
+        sourceMap: false,
+        cssnanoOptions: {
+          preset: [
+            'default',
+            {
+              mergeLonghand: false,
+              cssDeclarationSorter: false
+            }
+          ]
+        }
+      }
+    ),
+    /* config.plugin('hash-module-ids') */
+    new HashedModuleIdsPlugin(
+      {
+        hashDigest: 'hex'
+      }
+    ),
+    /* config.plugin('named-chunks') */
+    new NamedChunksPlugin(
+      function () { /* omitted long function */ }
+    ),
     /* config.plugin('html') */
     new HtmlWebpackPlugin(
       {
         title: 'vue-plugins',
         templateParameters: function () { /* omitted long function */ },
+        minify: {
+          removeComments: true,
+          collapseWhitespace: true,
+          collapseBooleanAttributes: true,
+          removeScriptTypeAttributes: true
+        },
         template: 'D:\\github\\web-practice\\checks\\vue-plugins\\public\\index.html'
       }
     ),

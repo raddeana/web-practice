@@ -6,30 +6,36 @@ module.exports = {
       .use('vue-loader')
         .loader('vue-loader')
         .tap(options => {
-          if (options)
-            options.shadowMode = true
+          if (!options)
+            options = {};
+          options.shadowMode = true
           return options
         });
+      
+      config.module.rule('css').oneOf('vue').use('extract-css-loader').clear();
+      config.module.rule('scss').oneOf('vue').use('extract-css-loader').clear();
 
       config.module
         .rule('css')
         .oneOf('vue')
-        .use('vue-style-loader')
+        .use('extract-css-loader')
           .loader('vue-style-loader')
           .tap(options => {
-            if (options)
-              options.shadowMode = true
+            if (!options)
+              options = {};
+            options.shadowMode = true
             return options
           });
 
     config.module
       .rule('scss')
       .oneOf('vue')
-      .use('vue-style-loader')
+      .use('extract-css-loader')
         .loader('vue-style-loader')
         .tap(options => {
-          if (options)
-            options.shadowMode = false
+          if (!options)
+            options = {};
+          options.shadowMode = false
           return options
         });
   }
