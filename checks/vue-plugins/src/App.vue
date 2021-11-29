@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <item-wc :sdc="{ title: sdc.title, msg: sdc.msg }" :title="sdc.title" :msg="sdc.msg" @kkk="handleKKK" ref="kkk" />
+    <item-wc :sdcstr="sdcstr" @kkk="handleKKK" ref="kkk" />
     <spring />
     <button @click="handleCNN">XY</button>
   </div>
@@ -23,13 +23,13 @@ export default {
   data: function () {
     return {
       list: [],
-      containers: [],
-      sdc: {
-        id: Math.random() * 100000,
-        title: (Math.random() * 100).toFixed(2),
-        msg: Math.random() * 10000
-      }
+      containers: []
     };
+  },
+  computed: {
+    sdcstr () {
+      return JSON.stringify(this.$store.state.sdc);
+    }
   },
   methods: {
     initData () {

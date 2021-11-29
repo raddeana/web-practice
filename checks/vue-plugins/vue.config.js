@@ -12,13 +12,13 @@ module.exports = {
           return options
         });
       
-      config.module.rule('css').oneOf('vue').use('extract-css-loader').clear();
-      config.module.rule('scss').oneOf('vue').use('extract-css-loader').clear();
+      // config.module.rule('css').oneOf('vue').use('extract-css-loader').clear();
+      // config.module.rule('scss').oneOf('vue').use('extract-css-loader').clear();
 
       config.module
         .rule('css')
         .oneOf('vue')
-        .use('extract-css-loader')
+        .use('vue-style-loader')
           .loader('vue-style-loader')
           .tap(options => {
             if (!options)
@@ -30,7 +30,7 @@ module.exports = {
     config.module
       .rule('scss')
       .oneOf('vue')
-      .use('extract-css-loader')
+      .use('vue-style-loader')
         .loader('vue-style-loader')
         .tap(options => {
           if (!options)

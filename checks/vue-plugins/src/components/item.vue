@@ -1,9 +1,9 @@
 <template>
   <div class="item">
-    <label>{{ title }}</label>
-    <p>{{ msg }}</p>
+    <label>{{ sdc.title }}</label>
+    <p>{{ sdc.content }}</p>
     <button class="btn" @click="handleClick">XXX</button>
-    <subitem :sdc="{ title, msg }" />
+    <subitem :sdc="sdc" />
   </div>
 </template>
 <style scoped>
@@ -30,17 +30,18 @@ export default {
     subitem
   },
   props: {
-    sdc: {
-      type: Object,
-      default: () => {}
-    },
-    title: {
+    sdcstr: {
       type: String,
       default: ''
-    },
-    msg: {
-      type: String,
-      default: ''
+    }
+  },
+  computed: {
+    sdc: function () {
+      if (this.sdcstr) {
+        return JSON.parse(this.sdcstr);
+      } else {
+        return {};
+      }
     }
   },
   methods: {
