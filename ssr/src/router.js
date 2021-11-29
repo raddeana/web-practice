@@ -12,13 +12,13 @@ export function createRouter () {
         mode: 'history',
         routes: [{ 
             path: '/',
-            component: () => import('./components/welcome.vue')
+            component: () => import('./pages/welcome.vue')
         }, {
             path: '/login',
-            component: () => import('./components/login.vue')
+            component: () => import('./pages/login.vue')
         }, {
             path: '/product/:id',
-            component: () => import('./components/product.vue')
+            component: () => import('./pages/product.vue')
         }]
     });
 }

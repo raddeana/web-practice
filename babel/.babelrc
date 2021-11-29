@@ -1,0 +1,22 @@
+{
+  // 预设
+  "presets": [
+    // 智能预设，自动加载插件
+    ["@babel/preset-env", {
+      "modules": false,
+      // 按需引入polyfill
+      "useBuiltIns": "usage",
+      "corejs": "3",
+      "targets": "ie >= 11"
+    }]
+  ],
+  // 插件
+  "plugins": [
+    // 提供沙箱
+    ["@babel/plugin-transform-runtime", {
+      "corejs": 3
+    }],
+    ["./plugin.test.js"]
+  ]
+}
+  
