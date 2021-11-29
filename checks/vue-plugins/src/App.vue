@@ -1,69 +1,34 @@
 <template>
   <div class="test">
-    <my-item :p="sdcData" @kkk="handleKKK" ref="kkk" />
+    <item-wc :sdc="{ title: sdc.title, msg: sdc.msg }" :title="sdc.title" :msg="sdc.msg" @kkk="handleKKK" ref="kkk" />
+    <spring />
     <button @click="handleCNN">XY</button>
   </div>
 </template>
-<style lang="scss" scoped>
-.container {
-  height: 340px;
-  width: 530px;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-  border: 1px solid #2c3e50;
-}
-
-.draggable-box {
-  height: 100%;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #2c3e50;
-}
-
-.list-main {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-content: flex-start;
-  flex-wrap: wrap;
-  background-color: transparent;
-}
-
-.vdr{
-  -ms-touch-action:none;
-  touch-action:none;
-}
-
-button {
-  color: red;
-  line-height: 34px;
-  font-size: 22px;
-}
+<style scoped lang="scss">
+  button {
+    color: green;
+    font-size: 24px;
+    line-height: 24px;
+  }
 </style>
 <script>
-import Vue from 'vue';
-import wrap from '@vue/web-component-wrapper';
-import item from './components/item.vue'
-import './components/vue-draggable-resizable.css'
-
+import spring from './spring';
 
 export default {
   name: 'App',
   components: {
-    item
+    spring
   },
   data: function () {
     return {
       list: [],
       containers: [],
-      sdcData: {
+      sdc: {
         id: Math.random() * 100000,
         title: (Math.random() * 100).toFixed(2),
         msg: Math.random() * 10000
-      },
-      t: '11111',
-      m: '22222'
+      }
     };
   },
   methods: {
@@ -97,8 +62,8 @@ export default {
       console.log('container recive pointerdown');
     },
 
-    handleKKK () {
-      alert('kkkk');
+    handleKKK (e) {
+      alert(e.detail);
     },
 
     handleCNN () {

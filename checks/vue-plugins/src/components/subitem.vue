@@ -1,7 +1,7 @@
 <template>
-<button class="btn btn1">{{ q.title || '111111111' }}</button>
+  <button class="btn btn1">{{ sdc.title }}</button>
 </template>
-<style lang="scss" scoped>
+<style scoped>
 button.btn.btn1 {
   font-size: 36px;
 }
@@ -10,7 +10,13 @@ button.btn.btn1 {
 export default {
   name: 'subitem',
   props: {
-    q: Object
+    sdc: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  created () {
+    window.$subitem = this;
   }
 }
 </script>
