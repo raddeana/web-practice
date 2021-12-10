@@ -2,13 +2,13 @@
   <div id="app">
     <draggable
       tag="div"
-      class="draggable-box"
+      class="constainer"
       v-bind="{
         group: {
-          name: 'form-draggable',
+          name: 'test',
           pull: 'clone'
         },
-        ghostClass: 'moving',
+        ghostClass: 'isMove',
         animation: 180
       }"
       :emptyInsertThreshold="0"
@@ -23,13 +23,13 @@
     </draggable>
     <draggable
       tag="div"
-      class="draggable-box"
+      class="constainer"
       v-bind="{
         group: {
-          name: 'form-draggable',
+          name: 'test',
           pull: 'clone'
         },
-        ghostClass: 'moving',
+        ghostClass: 'isMove',
         animation: 180
       }"
       :emptyInsertThreshold="0"
@@ -55,13 +55,13 @@
 }
 
 
-.draggable-box {
+.constainer {
   width: 47%;
   border-left: 2px solid #f00;
   float: left;
 }
 
-.draggable-box:first-child {
+.constainer:first-child {
   border-left: none;
 }
 
