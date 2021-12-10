@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <item-wc :sdcstr="sdcstr" @kkk="handleKKK" ref="kkk" />
+    <wc-item :sdcstr="sdcstr" @kkk="handleKKK" ref="kkk" />
     <spring />
     <button @click="handleCNN">XY</button>
   </div>
@@ -71,6 +71,7 @@ export default {
     }
   },
   created () {
+    console.log(this.$refs.kkk);
     this.initData();
     window.$app = this;
   }

@@ -27,16 +27,16 @@ module.exports = {
             return options
           });
 
-    config.module
-      .rule('scss')
-      .oneOf('vue')
-      .use('vue-style-loader')
-        .loader('vue-style-loader')
-        .tap(options => {
-          if (!options)
-            options = {};
-          options.shadowMode = false
-          return options
-        });
+          config.module
+          .rule('scss')
+          .oneOf('vue')
+          .use('vue-style-loader')
+            .loader('vue-style-loader')
+            .tap(options => {
+              if (!options)
+                options = {};
+              options.shadowMode = false
+              return options
+            });
   }
 };

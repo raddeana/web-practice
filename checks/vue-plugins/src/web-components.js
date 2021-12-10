@@ -6,4 +6,4 @@ import Vue from 'vue';
 import wrap from '@vue/web-component-wrapper';
 import item from './components/item.vue';
 
-customElements.define('item-wc', wrap(Vue, item));
+customElements.define('wc-item', wrap(Vue, item));
