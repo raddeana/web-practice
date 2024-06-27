@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/css/common.css" media="screen">
+    </head>
+    <body>
+        <button onClick="onSendMessage()">send</button>
+        <script type="text/javascript">
+            const chanel = new BroadcastChannel('test');
+            chanel.onmessage = function () {
+                alert('main');
+            }
+            function onSendMessage () {
+                chanel.postMessage('');
+            }
+        </script>
+    </body>
+</html>
