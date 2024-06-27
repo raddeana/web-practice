@@ -4,8 +4,14 @@
         <link rel="stylesheet" type="text/css" href="/css/normalize.css" media="screen">
         <link rel="stylesheet" type="text/css" href="/css/common.css" media="screen">
         <title>Web Component</title>
+        <style>
+            h1 {
+                font-size: 60px;
+            }
+        </style>
     </head>
     <body>
+        <h1>WEB COMPONENT</h1>
         <user-card
             id="user-card"
             image="https://semantic-ui.com/images/avatar2/large/kristy.png"
@@ -18,14 +24,14 @@
             document
                 .querySelector('#user-card')
                 .addEventListener('custom-click', function (event) {
-                    console.log('========>>> custom event click');
+                    console.log('custom event click');
                     console.log(event);
                 });
 
             document
                 .querySelector('#user-card')
                 .addEventListener('click', function (event) {
-                    console.log('========>>> click event');
+                    console.log('click event');
                     console.log(event);
                 });
         </script>

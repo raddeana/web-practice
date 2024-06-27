@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/css/common.css" media="screen">
+    </head>
+    <body>
+        <h1>Sub Page</h1>
+        <button onClick="onSendMessage()">发送</button>
+        <script type="text/javascript">
+            let sourceWin = null;
+            let orign = null
+            window.addEventListener('message', function (e) {
+                sourceWin = e.source;
+                orign = e.origin;
+            });
+            function onSendMessage () {
+                sourceWin.postMessage('test', orign);
+            }
+        </script>
+    </body>
+</html>

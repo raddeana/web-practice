@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/css/common.css" media="screen">
+    </head>
+    <body>
+        <button onClick="onOpenTabPage()">open</button>
+        <button onClick="onSendMessage()">send</button>
+        <script type="text/javascript">
+            let tabWin = null
+            function onOpenTabPage () {
+                tabWin = window.open('http://localhost:3000/post-message-sub.html', '_blank');
+                tabWin.onload = () => {
+                    onSendMessage()
+                }
+            }
+            function onSendMessage () {
+                tabWin.postMessage('test');
+            }
+            window.addEventListener('message', (e) => {
+                alert('origin');
+            });
+        </script>
+    </body>
+</html>

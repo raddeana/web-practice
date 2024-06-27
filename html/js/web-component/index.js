@@ -6,6 +6,9 @@ const template = document.createElement('template');
  
 template.innerHTML = `
     <style>
+        h1 {
+            color: blue;
+        }
         :host {
             width: 175px;
             height: 320px;
@@ -63,6 +66,7 @@ template.innerHTML = `
             text-transform: uppercase;
         }
     </style>
+    <h1>INSIDE</h1>
     <div class="user-card">
         <img class="image">
         <div class="container">
@@ -71,6 +75,9 @@ template.innerHTML = `
             <button class="button">Follow</button>
         </div>
     </div>
+    <script>
+        console.log('Hello from webcomponent！');
+    </script>
 `;
 
 class UserCard extends HTMLElement {

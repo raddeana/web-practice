@@ -12,4 +12,4 @@ app.use(async (ctx) => {
   ctx.body = 'web practice';
 });
 
-app.listen(3333);
+app.listen(3000);
