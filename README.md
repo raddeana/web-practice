@@ -1,2 +1,2 @@
 ### web-practice
-for web Technical practice 
+for web technical practice 
