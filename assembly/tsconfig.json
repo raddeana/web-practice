@@ -1,5 +1,5 @@
 {
-  "extends": "assemblyscript/std/assembly.json",
+  "extends": "assembly.json",
   "include": [
     "./**/*.ts"
   ]
