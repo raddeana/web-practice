@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.18.11",
+    "axios": "^1.7.7",
     "koa": "^2.13.1",
     "koa-static": "^5.0.0"
   },

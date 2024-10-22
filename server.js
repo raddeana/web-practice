@@ -7,6 +7,7 @@ const app = new Koa()
 const path = require('path')
 
 app.use(require('koa-static')(path.join(__dirname) + '/html'));
+app.use(require('koa-static')(path.join(__dirname) + '/node_modules'));
 
 app.use(async (ctx) => {
   ctx.body = 'web practice';

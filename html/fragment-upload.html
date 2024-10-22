@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>分片上传</title>
+    </head>
+    <body>
+        <input type="file" id="upload-input">
+        <button id="upload-btn">上传</button>
+        <script type="module">
+            import '../axios/dist/axios.min.js';
+
+            const input = document.getElementById('upload-input');
+            const btn = document.getElementById('upload-btn');
+            input.addEventListener('change', handleFileChange);
+            btn.addEventListener('click', handleUpload);
+
+            let fileObj = null;
+
+            /**
+             * 读取本地文件
+             */
+            function handleFileChange(e) {
+                console.log('files:', e.target.files);
+                const [file] = e.target.files;
+                fileObj = file;
+            }
+
+            /**
+             * 上传文件
+             */
+            function handleUpload() {
+                if (!fileObj) return;
+                const chunkList = createChunk(fileObj);
+                const chunks = chunkList.map(({file}, index) => {
+                    return {
+                        file,
+                        size: file.size,
+                        percent: 0,
+                        chunkName: `${fileObj.name}-${index}`,
+                        fileName: fileObj.name,
+                        index
+                    };
+                })
+                // 发请求
+                uploadChunks(chunks);
+            }
+
+            /**
+             * 切片
+             */
+            function createChunk(file, size = 512 * 1024) {
+                const chunkList = [];
+                let cur = 0;
+                while(cur < file.size) {
+                    const sliced = file.slice(cur, cur + size);
+                    console.log(sliced);
+                    // slice 切割
+                    chunkList.push({ file: sliced });
+                    cur += size;
+                }
+                return chunkList;
+            }
+        
+            /**
+             * 发送切片上传请求
+             */
+            function uploadChunks(chunks) {
+                // 这个数组中的元素是对象，对象中有 Blob类型的文件对象
+                const formChunks = chunks.map(({file, fileName, index, chunkName}) => {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('fileName', fileName);
+                    formData.append('chunkName', chunkName);
+                    return { formData, index };
+                });
+
+                // 转换为后端能识别的类型，并依次发送片段
+                const requestList = formChunks.map(({ formData, index }) => { 
+                    return axios.post('/upload', formData);
+                });
+                
+                // 所以切片都上传成功
+                Promise.all(requestList).then(res => {
+                    // 通知后端合并切片
+                    mergeChunks();
+                });
+            }
+        </script>
+    </body>
+</html>
