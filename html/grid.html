@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/normalize.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/css/common.css" media="screen">
+        <style type="text/css">
+            h4 {
+                margin-top: 20px;
+            }
+            .grid {
+                margin-top: 20px;
+                display: grid;
+                grid-template-columns: 120px 60px 100px;
+                grid-template-rows: 120px 60px 100px;
+                grid-row-gap: 15px;
+                grid-column-gap: 15px;
+                grid-auto-flow: dense;
+            }
+            .grid div,
+            .inline-grid span {
+                line-height: 60px;
+                border: 1px solid #333;
+                text-align: center;
+            }
+            .inline-grid {
+                margin-top: 20px;
+                display: inline-grid;
+                grid-template-columns: 120px 60px 100px;
+                grid-template-rows: 120px 60px 100px;
+                grid-row-gap: 15px;
+                grid-column-gap: 15px;
+                grid-auto-flow: dense;
+            }
+        </style>
+    </head>
+    <body>
+        <h4>Grid</h4>
+        <div class="grid">
+            <div>One</div>
+            <div>Two</div>
+            <div>Three</div>
+            <div>Four</div>
+            <div>Five</div>
+            <div>Six</div>
+            <div>Seven</div>
+        </div>
+        <h4>Inline Grid</h4>
+        <div class="inline-grid">
+            <span>One</span>
+            <span>Two</span>
+            <span>Three</span>
+            <span>Four</span>
+            <span>Five</span>
+            <span>Six</span>
+            <span>Seven</span>
+        </div>
+    </body>
+</html>
